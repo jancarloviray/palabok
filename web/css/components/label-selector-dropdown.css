@@ -1,0 +1,40 @@
+@import '../variables.css';
+
+/*
+ * The dropdown box (not the popup)
+ */
+
+.label-selector-dropdown {
+  @apply --font-size-1;
+
+  & {
+    background: transparent;
+    border: 0;
+    margin: 0;
+    padding: 4px 12px 2px;
+    border-radius: 32px;
+    display: inline-block;
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+
+  &::after {
+    @apply --ion-icon;
+    @apply --ion-icon-ios-arrow-down;
+
+    color: var(--gray-text);
+    margin-left: 8px;
+    font-size: 16px;
+  }
+
+  &.-open,
+  &:hover,
+  &:focus {
+    background: var(--focus-color);
+  }
+
+  &:active {
+    background: var(--active-color);
+  }
+}

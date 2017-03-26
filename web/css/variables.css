@@ -5,12 +5,21 @@
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   --gray: #8090a0;
   --background: #eeeef1;
+  --toast-background: color(var(--background) tint(50%));
   --text-color: #404050;
+  --dark-text-color: #222;
   --accent: #42a5f5;
+  --success-color: green;
   --line-color: color(var(--text-color) alpha(15%));
   --button-shadow: 0 4px 8px color(#567 alpha(10%));
   --button-shadow-active: 0 6px 12px color(#567 alpha(20%));
   --gray-text: #8090a0;
+  --light-gray-text: color(var(--gray-text) tint(40%));
+  --hover-color: color(var(--gray) alpha(5%));
+  --focus-color: color(var(--gray) alpha(10%));
+  --active-color: color(var(--gray) alpha(20%));
+  --transition-duration: 300ms;
+  --transition-zip: cubic-bezier(0.1, 0.8, 0.2, 0.9);
 
   --clearfix: {
     &::after {

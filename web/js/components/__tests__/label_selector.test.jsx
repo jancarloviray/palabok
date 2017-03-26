@@ -1,11 +1,21 @@
+/* eslint-env jest */
 import React from 'react'
-import LabelSelector from '../label_selector'
 import {mount} from 'enzyme'
 
-test('works', () => {
-  const result = mount(
-    <LabelSelector label="Work" />
-  )
+import { LabelSelector } from '../label_selector'
 
-  expect(result.text()).toEqual('Work')
+test('works', () => {
+  const labels = {
+    '_work': { id: 'work', name: 'Trabajo' }
+  }
+
+  const result = mount(
+    <LabelSelector
+      labels={labels}
+      selectedId={'_work'}
+      onSelect={() => {}}
+      open={false}
+      onToggleOpen={() => {}} />)
+
+  expect(result.text()).toEqual('Trabajo')
 })

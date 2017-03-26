@@ -1,15 +1,31 @@
 @import '../variables.css';
 
+/*
+ * Timer layout.
+ *
+ * - body - the timer stuff
+ * - rawbody - other stuff
+ * - fixed - fixed stuff
+ * - topleft
+ * - topright
+ */
+
 .timer-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
 
   &.-log {
     background: white;
   }
 
-  & > .bottom {
+  & > .fixed {
     flex: 0 0 auto;
   }
 
@@ -19,6 +35,30 @@
 
   & > .rawbody {
     flex: 1 0 auto;
+  }
+
+  & > .topleft {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+  }
+
+  & > .topright {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+  }
+
+  @media (width <= 480px) {
+    & > .topleft {
+      left: 0;
+      top: 0;
+    }
+
+    & > .topright {
+      right: 0;
+      top: 0;
+    }
   }
 }
 

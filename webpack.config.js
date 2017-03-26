@@ -3,7 +3,7 @@ const resolve = require('path').resolve
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const LiveReloadPlugin = require('webpack-livereload-plugin')
+// const LiveReloadPlugin = require('webpack-livereload-plugin')
 
 const DEBUG = process.env.NODE_ENV !== 'production'
 const SRC = './web'
@@ -25,7 +25,7 @@ module.exports = {
   output: {
     path: resolve(__dirname, DEST),
     filename: '[name].js',
-    pathinfo: DEBUG ? true : false,
+    pathinfo: Boolean(DEBUG),
     devtoolModuleFilenameTemplate: 'webpack:///[absolute-resource-path]'
   },
 
@@ -42,20 +42,20 @@ module.exports = {
                 ? {
                   sourceMap: true,
                   importLoaders: 1
-                } :
-                { }
+                }
+                : { }
             },
             {
               loader: 'postcss-loader',
               options: DEBUG
                 ? { sourceMap: 'inline' }
                 : {}
-            },
+            }
           ]
         })
       },
       {
-        test: /\.(png|jpg|jpeg|gif|ico|woff|woff2|eot|otf)$/,
+        test: /\.(png|jpg|jpeg|gif|ico|woff|woff2|eot|otf|svg)$/,
         use: [
           {
             loader: 'file-loader',
@@ -77,12 +77,12 @@ module.exports = {
             }
           }
         ]
-      },
-    ],
+      }
+    ]
   },
 
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx']
   },
 
   plugins: [
@@ -97,22 +97,23 @@ module.exports = {
 
     // Compress React (and others)
     new webpack.EnvironmentPlugin({
-      NODE_ENV: process.env.NODE_ENV || 'development'
+      NODE_ENV: process.env.NODE_ENV || 'development',
+      VERSION: getVersion()
     }),
 
     // Copying files directly
     new CopyWebpackPlugin([
       // { from: `${SRC}/assets`, to: './assets' },
-      { from: `${SRC}/html`, to: '.' },
+      { from: `${SRC}/html`, to: '.' }
     ]),
 
     // Ignore locales because it's around 400kb
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ].concat(DEBUG ? [
     // LiveReload in development
-    new LiveReloadPlugin({
-      appendScriptTag: true
-    }),
+    // new LiveReloadPlugin({
+    //   appendScriptTag: true
+    // }),
 
     // Debug mode for old webpack plugins
     new webpack.LoaderOptionsPlugin({
@@ -123,18 +124,25 @@ module.exports = {
   // Hide source maps in production (no sourceMappingURL)
   devtool: DEBUG ? 'source-map' : 'hidden-source-map',
 
-  // https://github.co./webpack-contrib/extract-text-webpack-plugin/issues/35
+  // https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/35
   stats: stats(),
 
   devServer: {
     stats: stats()
-  },
+  }
 }
 
 function stats () {
   return {
     children: false,
     chunks: false,
-    assetsSort: 'name',
+    assetsSort: 'name'
   }
+}
+
+function getVersion () {
+  return require('child_process')
+    .execSync('git describe --always --tags --dirty')
+    .toString()
+    .trim()
 }

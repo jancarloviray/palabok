@@ -1,0 +1,21 @@
+@import '../variables.css';
+
+.settings-layout {
+  background: white;
+  height: 100vh;
+  overflow: auto;
+  box-shadow: var(--button-shadow-active);
+  width: 320px;
+
+  @media (width <= 480px) {
+    width: 100%;
+  }
+
+  & > .title {
+    padding: 0;
+  }
+
+  & > .body {
+    padding: 16px;
+  }
+}

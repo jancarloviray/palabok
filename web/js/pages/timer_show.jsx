@@ -1,89 +1,66 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import get from '101/pluck'
-import Title from 'react-document-title'
-import ms from '../helpers/timer_display'
-import TimerLayout from '../components/timer_layout'
-import LabelSelector from '../components/label_selector'
+/*::
+  import type { FullTimer } from '../selectors/timer'
+  import type { FullLabel } from '../selectors/label'
 
-class TimerShow extends React.Component {
+  type Props = {
+    now: Date,
+    timer: FullTimer,
+    color: string
+  }
+*/
+
+import React from 'react'
+import get from '101/pluck'
+import { connect } from 'react-redux'
+
+import TimerBlank from '../components/timer_blank'
+import TimerLayout from '../components/timer_layout'
+import TimerControls from '../components/timer_controls'
+import TimerDisplay from '../components/timer_display'
+import TimerTitle from '../components/timer_title'
+import Timer from '../selectors/timer'
+import { full as fullLabel } from '../selectors/label'
+import { BREAK_COLOR } from '../selectors/color'
+
+export class TimerShow extends React.PureComponent {
+  /*:: props: Props */
+
   render () {
-    if (!this.props.active) {
-      return <NoTimerActive {...this.props} />
+    if (!this.props.timer.active) {
+      return <TimerBlank {...this.props} />
     }
 
-    const { now, timerType, startedAt, duration, label } = this.props
-    const elapsed = +now - +startedAt
-    const remaining = +startedAt + duration - +now
+    const { timer, color } = this.props
 
-    const trueLabel = timerType === 'work' ? label : 'Break'
-
-    return <TimerLayout page="timer">
-      <Title title={`${ms(remaining, true)} • ${trueLabel}`} />
-
-      <div className="timer-heading">
-        <h1>
-          {timerType === 'work'
-            ? <LabelSelector label={label} />
-            : <em>Break</em>}
-        </h1>
-        <p>
-          {ms(elapsed)}
-          <span> of </span>
-          {ms(duration)}
-        </p>
-      </div>
-
-      <div className="timer-spacer" />
-
-      <div className="timer-display">
-        <span className="label">{ms(remaining, true)}</span>
-      </div>
-
-      <div className="timer-spacer" />
-
-      <div className="timer-actions">
+    return <TimerLayout page='timer' className='_page-fade'>
+      <TimerTitle timer={timer} />
+      <TimerControls {...this.props} />
+      <div className='timer-spacer' />
+      <TimerDisplay timer={timer} color={color} />
+      <div className='timer-spacer' />
+      <div className='timer-actions'>
         <button
-          aria-label="Stop"
-          className="timer-button button -stop"
+          aria-label='Stop'
+          className='timer-button button -stop'
           onClick={() => this.props.onStop()}>
-          <span className="icon" />
+          <span className='icon' />
         </button>
       </div>
     </TimerLayout>
   }
 }
 
-function NoTimerActive ({ onHome }) {
-  return <TimerLayout>
-    <Title title='No timer' />
+export default connect(
+  state => {
+    const timer = Timer.full(state)
+    const label = fullLabel(state.labels[timer.labelId])
 
-    <div className="timer-heading">
-      No timer active.
-    </div>
-
-    <div className="timer-spacer" />
-
-    <div className="timer-actions">
-      <button
-        className="timer-button button -back"
-        onClick={() => onHome()}>
-        Back
-      </button>
-    </div>
-  </TimerLayout>
-}
-
-TimerShow = connect(
-  state => ({
-    now: get(state, 'time.now'),
-    label: get(state, 'timer.label'),
-    active: get(state, 'timer.active'),
-    startedAt: get(state, 'timer.startedAt'),
-    endsAt: get(state, 'timer.endsAt'),
-    timerType: get(state, 'timer.type'),
-    duration: get(state, 'timer.duration'),
-  }),
+    return {
+      now: get(state, 'time.now'),
+      timer,
+      color: timer.type === 'work' ? label.cssColor : BREAK_COLOR
+    }
+  },
   dispatch => ({
     onStop: () => {
       dispatch({ type: 'timer:stop!' })
@@ -91,6 +68,5 @@ TimerShow = connect(
     onHome: () => {
       dispatch({ type: 'router:nav!', to: '/', replace: true })
     }
-  }))(TimerShow)
-
-export default TimerShow
+  })
+)(TimerShow)

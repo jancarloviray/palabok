@@ -1,0 +1,7 @@
+[ignore]
+.*/node_modules/stylelint/.*
+.*/node_modules/electron-packager/.*
+.*/__tests__/.*
+
+[libs]
+flow-typed/

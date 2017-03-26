@@ -1,0 +1,32 @@
+@import '../variables.css';
+@import '../mixins/icon-button.css';
+
+.mode-selector-button {
+  & {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    white-space: nowrap;
+  }
+
+  & {
+    @apply --icon-button;
+  }
+
+  & > .icon::before {
+    @apply --ion-icon;
+  }
+
+  &.-single > .icon::before {
+    @apply --ion-icon-md-return-left;
+  }
+
+  &.-continuous > .icon::before {
+    @apply --ion-icon-md-repeat;
+  }
+
+  &.-alternate > .icon::before {
+    @apply --ion-icon-md-shuffle;
+  }
+}

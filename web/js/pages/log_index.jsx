@@ -1,38 +1,54 @@
 import React from 'react'
-import TimerLayout from '../components/timer_layout'
 import Title from 'react-document-title'
-import values from 'object-loops/values'
-import { byDate } from '../log'
+import { byDate } from '../selectors/log'
 import { connect } from 'react-redux'
 import LogDates from '../components/log_dates'
 
-class LogIndex extends React.Component {
-  render () {
-    return <div className="timer-layout -log">
-      <Title title='Timer log' />
+/**
+ * Timeline page
+ */
 
-      <div className="rawbody">
-        <div className="slim-container">
+export function LogIndex (props) {
+  const {itemsByDate, onBack, labels} = props
+  const isEmpty = Object.keys(itemsByDate).length === 0
 
-          <div className="actions-list">
-            <div className="right">
-              <button
-                className="icon-button -close"
-                onClick={() => this.props.onBack()}>
-              </button>
-            </div>
+  return <div className='timer-layout -log _page-bottom'>
+    <Title title='Your timeline' />
+
+    <div className='rawbody'>
+      <div className='slim-container'>
+
+        <div className='actions-list'>
+          <div className='right'>
+            <button
+              className='icon-button -close'
+              onClick={() => onBack()} />
           </div>
-
-          <LogDates items={this.props.itemsByDate} />
         </div>
+
+        { isEmpty
+          ? <LogBlankState />
+          : <LogDates itemsByDate={itemsByDate} labels={labels} /> }
       </div>
     </div>
-  }
+  </div>
 }
 
-LogIndex = connect(
+function LogBlankState () {
+  return <div className='blank-state -log'>
+    <h2>Timeline</h2>
+    <p>When you finish a work period, it will appear here.</p>
+  </div>
+}
+
+/*
+ * Redux
+ */
+
+export default connect(
   state => ({
-    itemsByDate: byDate(state)
+    itemsByDate: byDate(state),
+    labels: state.labels
   }),
 
   dispatch => ({
@@ -41,5 +57,3 @@ LogIndex = connect(
     }
   })
 )(LogIndex)
-
-export default LogIndex
